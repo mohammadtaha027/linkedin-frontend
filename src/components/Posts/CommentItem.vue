@@ -35,6 +35,7 @@ const replyComment = async () => {
     alert(result.data.message)
   }
 }
+
 onMounted(() => {
   commentObject.value = commentprops.comment
   create_reply_ref.value = { show: true }
@@ -98,5 +99,6 @@ onMounted(() => {
     :comment="comment"
     :post_id="commentObject.post_id"
     :key="comment.id"
+    @updateComments="onUpdateComments"
   />
 </template>

@@ -1,8 +1,10 @@
 <script setup>
-import { ref, defineProps, onMounted } from 'vue'
+import { ref, defineProps, onMounted, reactive } from 'vue'
 // import moment from 'moment'
 import { onlikeUnlike, Comment, formatDate } from '../../composible/authApi'
 import CommentItem from './CommentItem.vue'
+import cloneDeep from 'lodash/cloneDeep'
+
 const props = defineProps({
   post: Object
 })
@@ -60,10 +62,11 @@ const collapseEvent = () => {
   }
 }
 const onUpdateComment = async (data) => {
-  comments.value = data.comments
+  comments.value = cloneDeep(data.comments)
   commentsCount.value = data.comment_count
-  console.log(comments.value)
+  console.log('|||||||', data.comments)
 }
+
 onMounted(async () => {
   post.value = props.post
   like.value = props.post.checklike

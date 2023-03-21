@@ -4,14 +4,21 @@ import PostItem from './Posts/PostItem.vue'
 import { getAllPosts } from '../composible/authApi'
 import { ref, onMounted } from 'vue'
 import { Modal } from 'bootstrap'
+import UserItem from './UserItem.vue'
 const posts = ref([])
+const unfriends = ref([])
+const friends = ref([])
+const friends_2rd = ref([])
 const create_post_ref = ref(null)
 const createPostModalObject = ref({})
 onMounted(async () => {
   createPostModalObject.value = new Modal(create_post_ref.value)
   const posts_data = await getAllPosts()
   posts.value = posts_data.data.posts
-  console.log(posts_data.data.users)
+  unfriends.value = posts_data.data.users.unfriends
+  friends.value = posts_data.data.users.friends
+  friends_2rd.value = posts_data.data.users.friends_2rd
+  // console.log(posts_data.data.users.unfriends)
   // console.log(posts.value)
   // return { posts }
 })
@@ -22,15 +29,57 @@ const onAddNewPost = async (data) => {
   posts.value = data
   // console.log(data)
 }
+const onRemoveFriend = async (data) => {
+  console.log(data)
+  if (data.status == 'success') {
+    unfriends.value = data.users.unfriends
+    friends.value = data.users.friends
+    friends_2rd.value = data.users.friends_2rd
+  } else {
+    console.log(data.message)
+  }
+}
+const onAddFriend = async (data) => {
+  console.log(data)
+  if (data.status == 'success') {
+    unfriends.value = data.users.unfriends
+    friends.value = data.users.friends
+    friends_2rd.value = data.users.friends_2rd
+  } else {
+    console.log(data.message)
+  }
+}
 </script>
 
 <template>
   <div class="container pt-5">
     <div class="row">
       <div class="col-12 col-sm-3">
+        <div class="card mb-4">
+          <div class="card-header"><h3>Connects</h3></div>
+          <div class="card-body">
+            <UserItem
+              v-for="user in friends"
+              :user="user"
+              :key="user.id"
+              :friend_status="'friend'"
+              @removeFriend="onRemoveFriend"
+              @addFriend="onAddFriend"
+            />
+          </div>
+        </div>
         <div class="card">
-          <div class="card-header"><h3>Friends</h3></div>
-          <div class="card-body"></div>
+          <div class="card-header"><h3>2rd Connects</h3></div>
+          <div class="card-body">
+            <UserItem
+              v-for="user in friends_2rd"
+              :user="user"
+              :key="user.id"
+              :friend_status="'unfriends'"
+              @removeFriend="onRemoveFriend"
+              @addFriend="onAddFriend"
+            />
+          </div>
         </div>
       </div>
       <div class="col-12 col-sm-6">
@@ -48,16 +97,23 @@ const onAddNewPost = async (data) => {
             </div>
           </div>
           <div class="card-body" id="post_feed">
-            <!-- <PostItem v-if="new_post.id" :post="new_post" :key="new_post.id" /> -->
-            <!-- <GetPosts /> -->
             <PostItem v-for="post in posts" :post="post" :key="post.id" />
           </div>
         </div>
       </div>
       <div class="col-12 col-sm-3">
         <div class="card">
-          <div class="card-header"><h3>My Info</h3></div>
-          <div class="card-body"></div>
+          <div class="card-header"><h3>Users</h3></div>
+          <div class="card-body">
+            <UserItem
+              v-for="user in unfriends"
+              :user="user"
+              :key="user.id"
+              :friend_status="'unfriends'"
+              @addFriend="onAddFriend"
+              @removeFriend="onRemoveFriend"
+            />
+          </div>
         </div>
       </div>
     </div>

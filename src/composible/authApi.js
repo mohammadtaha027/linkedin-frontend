@@ -122,4 +122,44 @@ const Comment = async (data) => {
   const comment = await axios(config)
   return comment
 }
-export { checkUser, Logout, getAllPosts, onCreatePost, onlikeUnlike, Comment, formatDate }
+const AddFriend = async (data) => {
+  const access_token = getStorage('linkedin_auth', 'access_token')
+  const url = 'http://192.168.1.108:8000/api/friend'
+  const config = {
+    method: 'post',
+    url: url,
+    maxBodyLength: Infinity,
+    headers: {
+      Authorization: `Bearer ${access_token}`
+    },
+    data: { second_user: data }
+  }
+  const addFriend = await axios(config)
+  return addFriend
+}
+const RemoveFriend = async (data) => {
+  const access_token = getStorage('linkedin_auth', 'access_token')
+  const url = 'http://192.168.1.108:8000/api/unfriend'
+  const config = {
+    method: 'post',
+    url: url,
+    maxBodyLength: Infinity,
+    headers: {
+      Authorization: `Bearer ${access_token}`
+    },
+    data: { second_user: data }
+  }
+  const removeFriend = await axios(config)
+  return removeFriend
+}
+export {
+  checkUser,
+  Logout,
+  getAllPosts,
+  onCreatePost,
+  onlikeUnlike,
+  Comment,
+  formatDate,
+  AddFriend,
+  RemoveFriend
+}
